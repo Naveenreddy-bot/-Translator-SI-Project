@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Translator</title>
+  </head>
+  <body>
+    <h1>Translator</h1>
+    <label for="text">Enter text to translate in Hindi from English:</label>
+    <input type="text" id="text" name="text">
+    <br><br>
+    <button id="translate-btn">Translate</button>
+    <br><br>
+    <label for="translation">Translation in Hindi:</label>
+    <div id="translation"></div>
+    <script>
+      const translateBtn = document.querySelector('#translate-btn');
+      const textInput = document.querySelector('#text');
+      const translationDiv = document.querySelector('#translation');
+      
+      translateBtn.addEventListener('click', async () => {
+        const endpoint = "https://api.cognitive.microsofttranslator.com/translate";
+        const apiKey = "544e65984f2142bb84e51da85d4496c7";
+        const toLanguage = "hi";  // Change this to the target language you want to translate to
+        
+        const headers = {
+          "Ocp-Apim-Subscription-Key": apiKey,
+          "Content-Type": "application/json",
+          "Ocp-Apim-Subscription-Region": "eastus"
+        };
+        const body = [{ text: textInput.value }];
+        const params = new URLSearchParams({
+          "api-version": "3.0",
+          "to": toLanguage
+        });
+        const response = await fetch(`${endpoint}?${params}`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body)
+        });
+        const result = await response.json();
+        const translatedText = result[0].translations[0].text;
+        translationDiv.textContent = translatedText;
+      });
+    </script>
+  </body>
+</html>
